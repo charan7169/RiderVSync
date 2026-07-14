@@ -1,0 +1,6 @@
+{
+  "name": "Rider V-Sync",
+  "description": "A high-performance realistic motorcycle physics simulator with virtual telemetry, gear mapping, custom settings, and responsive gesture-based controls.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
