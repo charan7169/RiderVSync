@@ -181,15 +181,9 @@ User
 
 ---
 
-# Team
+# Created By
 
-- S. V. Charan Reddy
-- Rajath M
-- Rohith S
-- Rama Krishna
-- Sarthak
-
-**Guide:** Divya G
+- S.V.Charan Reddy
 
 ---
 
