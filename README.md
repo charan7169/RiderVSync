@@ -1,118 +1,198 @@
-# Rider V-Sync Webcam Gesture System
+# 🏍️ RiderVSync
 
-Welcome to the **Rider V-Sync Gesture Controller Integration**! 
+**AI-Powered Gesture-Based Motorcycle Riding Simulator**
 
-This module replaces keyboard input with official motorcycle hand signals and thumb gesture telemetry detected via your default webcam. It captures pose/skeletal nodes and multi-hand joints in real-time, filters out accidental movements, and relays them to the physics-driven motorcycle simulation.
+RiderVSync is an educational project that teaches motorcycle riders proper traffic hand signals through an interactive simulation. The system uses **OpenCV** and **MediaPipe** to detect hand gestures from a webcam and communicates with a **Node.js** backend and **React** frontend to control the simulation in real time.
 
 ---
 
-## 🚀 Architectural Design Flow
+# Features
+
+- Real-time hand gesture recognition
+- AI-powered computer vision
+- Interactive bike riding simulator
+- React-based user interface
+- Node.js backend
+- Educational traffic hand signal training
+
+---
+
+# Technologies
+
+- React.js
+- Node.js
+- Express.js
+- Python
+- OpenCV
+- MediaPipe
+- JavaScript
+- HTML
+- CSS
+- Git & GitHub
+
+---
+
+# Project Structure
 
 ```
-+-----------------------------------------------------------+
-|                      LOCAL WEBCAM                         |
-|  (Captures live frame, horizontal mirroring, FPS tracker)  |
-+-----------------------------+-----------------------------+
-                              |
-                              v [Webcam Video Stream]
-+-----------------------------------------------------------+
-|                     MEDIAPIPE ENGINES                     |
-|  (Pose tracking: Shoulder/Elbow/Wrist | Hands: 21 nodes)  |
-+-----------------------------+-----------------------------+
-                              |
-                              v [Joint Coordinates & Visibilities]
-+-----------------------------------------------------------+
-|                    GESTURE CLASSIFIERS                    |
-|  (Rule-based geometric angle checks & finger fold ratios) |
-+-----------------------------+-----------------------------+
-                              |
-                              v [Raw Detected Gestures]
-+-----------------------------------------------------------+
-|                     GESTURE FILTERS                       |
-|  (Enforces confidence threshold & minimum 300ms hold time)|
-+-----------------------------+-----------------------------+
-                              |
-                              v [Smoothed command actions]
-+-----------------------------------------------------------+
-|                    TCP SOCKET TRANSMITTER                 |
-|  (Relays raw strings e.g. LEFT, RIGHT, STOP on port 5000)  |
-+-----------------------------+-----------------------------+
-                              |
-                              v [Raw Socket Packet]
-+-----------------------------------------------------------+
-|                  EXPRESS / NODE TELEMETRY GATEWAY         |
-|  (Hosts TCP listener at 5000 & WebSocket server at 3000)   |
-+-----------------------------+-----------------------------+
-                              |
-                              v [Secure WebSockets over /ws]
-+-----------------------------------------------------------+
-|                      REACT FRONTEND                       |
-|  (Applies inputs to physics and updates telemetry UI)     |
-+-----------------------------------------------------------+
+RiderVSync/
+│── network/
+│── opencv/
+│── server/
+│── src/
+│── public/
+│── package.json
+│── package-lock.json
+│── README.md
 ```
 
 ---
 
-## 📦 Python Installation & Setup
+# Prerequisites
 
-Before running the webcam gesture gateway, make sure you have Python 3 installed on your local computer, then install the necessary dependencies:
+Install the following before running the project:
+
+- Git
+- Node.js (LTS)
+- npm
+- Python 3.12+
+
+Verify installation:
 
 ```bash
-pip install opencv-python mediapipe numpy
+node -v
+npm -v
+python --version
+git --version
 ```
 
 ---
 
-## 🏍️ How to Run the System
+# Installation
 
-### Step 1: Start the Game
-Run the game using the AI Studio development environment or build and run it locally.
-* The server will automatically spin up two interfaces:
-  * **HTTP + WebSocket Web Gateway** on Port `3000`
-  * **Raw TCP Telemetry Server** on Port `5000`
+## 1. Clone the repository
 
-### Step 2: Start the OpenCV Webcam Gateway
-Open a new terminal on your local machine and execute the following:
+```bash
+git clone https://github.com/charan7169/RiderVSync.git
+cd RiderVSync
+```
+
+## 2. Install Node.js dependencies
+
+```bash
+npm install
+```
+
+If the backend has a separate package:
+
+```bash
+cd server
+npm install
+```
+
+## 3. Install Python libraries
+
+```bash
+pip install opencv-python mediapipe pygame numpy
+```
+
+---
+
+# Running the Project
+
+## Start Backend
+
+```bash
+cd server
+npm start
+```
+
+## Start Frontend
+
+```bash
+npm start
+```
+
+or
+
+```bash
+npm run dev
+```
+
+## Start Gesture Detection
 
 ```bash
 python opencv/main.py
 ```
 
-### Step 3: Calibrate and Race!
-1. A **CV Calibration Console** window will open displaying your camera feed.
-2. Align yourself so that your upper body, left arm, and left hand are clearly visible.
-3. Once all checkmarks turn green (Connection, Body Pose, Left Arm, Hand Coordinates, Ambient Lighting) for 2 seconds, the console status will read **READY!**.
-4. Press the **SPACEBAR** inside the OpenCV window to lock in calibration and start gameplay synchronization!
-5. Perform hand signals to control your bike. The game HUD will display **CV ACTIVE: [GESTURE]** with a cyan pulsing status ring!
+Replace `main.py` with your actual Python file if it has a different name.
 
 ---
 
-## 🎛️ Gesture Command Reference
+# Usage
 
-| Gesture | Motorcycle Signal | Physical Conditions | Game Command |
-| :--- | :--- | :--- | :--- |
-| **LEFT TURN** | Left arm horizontal | Left arm fully extended horizontally straight (elbow angle > 155°). | `LEFT` |
-| **RIGHT TURN** | Left arm angled up | Left upper arm horizontal, left elbow bent upward at 90°, forearm vertical upward. | `RIGHT` |
-| **STOP** | Left arm angled down | Left upper arm horizontal, left elbow bent downward at 90°, forearm vertical downward. | `STOP` |
-| **GEAR UP** | Thumbs Up | Four non-thumb fingers folded, thumb pointing straight vertically up. | `GEAR_UP` |
-| **GEAR DOWN** | Thumbs Down | Four non-thumb fingers folded, thumb pointing straight vertically down. | `GEAR_DOWN` |
-
-*Note: When returning your arm/hand to neutral driving posture, a `NEUTRAL` reset is automatically broadcasted to return steering back to centered alignment.*
+1. Connect a webcam.
+2. Start the backend.
+3. Start the frontend.
+4. Run the Python gesture detection program.
+5. Allow camera access.
+6. Perform supported hand gestures.
+7. Observe the corresponding bike actions.
 
 ---
 
-## 📂 Project Structure Map
+# System Flow
 
-### `/network`
-* **`socket_client.py`**: A raw TCP client wrapper that establishes connections to `127.0.0.1:5000`, implements safety timeouts, and handles automatic socket reconnections.
-* **`socket_server.py`**: A standalone Python TCP server supporting multi-threaded client routing to assist in localized testing.
+```
+User
+   │
+   ▼
+ Webcam
+   │
+   ▼
+ OpenCV
+   │
+   ▼
+ MediaPipe
+   │
+   ▼
+ Gesture Detection
+   │
+   ▼
+ Node.js Server
+   │
+   ▼
+ React Frontend
+   │
+   ▼
+ Bike Simulation
+```
 
-### `/opencv`
-* **`camera.py`**: Wraps the OpenCV `VideoCapture` class. Performs natural mirroring, tracks smoothed processing FPS, and renders overlay diagnostics.
-* **`pose_detector.py`**: Processes images with MediaPipe Pose, returning relative positions of the head, shoulders, elbows, and wrists, and implements 2D geometric angle formula.
-* **`hand_detector.py`**: Tracks 21 coordinates for each hand via MediaPipe Hands to analyze knuckles-to-wrist fold ratios.
-* **`gesture_detector.py`**: Evaluates custom geometric rule conditions for standard motorcycle operations.
-* **`gesture_filter.py`**: Restricts instant classifications, enforces a minimum `300ms` continuous hold, and debounces signal noise.
-* **`calibration.py`**: Checks alignment metrics, assesses ambient light averages, and guides the user into the active frame.
-* **`network_client.py`**: Proxy layer connecting the main video capture loop with the socket client.
-* **`main.py`**: Main application thread managing frame ingestion, visual HUD renderings, state transitions, and client shutdowns.
+---
+
+# Future Improvements
+
+- Voice commands
+- Mobile application
+- Multiplayer mode
+- Traffic sign recognition
+- Eye-blink detection
+- Rider analytics
+
+---
+
+# Team
+
+- S. V. Charan Reddy
+- Rajath M
+- Rohith S
+- Rama Krishna
+- Sarthak
+
+**Guide:** Divya G
+
+---
+
+# License
+
+This project is intended for educational purposes.
